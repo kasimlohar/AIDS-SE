@@ -1,0 +1,60 @@
+# Experiment No 4
+# Python program to store first-year percentages of students and perform sorting using:
+# a) Selection Sort
+# b) Bubble Sort
+
+# Function to perform Bubble Sort on the list of marks
+def Bubble_Sort(marks):
+    n = len(marks)
+    # Traverse through all elements in the list
+    for i in range(n - 1):
+        # Last i elements are already sorted
+        for j in range(0, n - i - 1):
+            # Swap if the current element is greater than the next element
+            if marks[j] > marks[j + 1]:
+                marks[j], marks[j + 1] = marks[j + 1], marks[j]
+    
+    print("Marks of students after performing Bubble Sort: ")
+    print(', '.join(str(x) for x in marks))
+
+    # Display top 5 scores
+    print("\nTop 5 Scores (Bubble Sort):")
+    print(', '.join(str(x) for x in marks[-5:][::-1]))  # Last 5 elements in reverse order
+
+# Function to perform Selection Sort on the list of marks
+def Selection_Sort(marks):
+    # Traverse through the entire array
+    for i in range(len(marks)):
+        # Find the index of the minimum element in the remaining unsorted array
+        min_idx = i
+        for j in range(i + 1, len(marks)):
+            if marks[min_idx] > marks[j]:
+                min_idx = j
+
+        # Swap the found minimum element with the first element of the unsorted part
+        marks[i], marks[min_idx] = marks[min_idx], marks[i]
+
+    print("Marks of students after performing Selection Sort: ")
+    print(', '.join(str(x) for x in marks))
+
+    # Display top 5 scores
+    print("\nTop 5 Scores (Selection Sort):")
+    print(', '.join(str(x) for x in marks[-5:][::-1]))  # Last 5 elements in reverse order
+
+# Main Program
+print("********** First Year Student Percentages **********")
+n = int(input("Enter the total number of students: "))
+
+# List to store student percentages
+student_percentages = []
+
+print("Enter the percentage of each student:")
+for i in range(n):
+    percentage = float(input(f"Student {i + 1}: "))
+    student_percentages.append(percentage)
+
+# Perform Selection Sort and display the result
+Selection_Sort(student_percentages.copy())  # Passing a copy to keep original list intact
+
+# Perform Bubble Sort and display the result
+Bubble_Sort(student_percentages.copy())  # Passing a copy to keep original list intact
