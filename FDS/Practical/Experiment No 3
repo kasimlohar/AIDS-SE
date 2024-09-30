@@ -1,0 +1,90 @@
+# Experiment No 3
+# Python program for a department library to manage N books and perform various operations
+
+# Function to copy books with a cost less than 500 into a new list
+def copy_book(books):
+    new_list = []
+    for title, cost in books.items():
+        if cost < 500:
+            new_list.append(title)  # Append book title to the list if cost is less than 500
+    return new_list
+
+# Function to count the number of books with a cost greater than 500
+def count_book(books):
+    count = 0
+    for title, cost in books.items():
+        if cost > 500:
+            count += 1  # Increment count if cost is more than 500
+    return count
+
+# Function to sort the books in ascending order based on their cost using Bubble Sort
+def bubble_sort_dict(books):
+    # Convert the dictionary into a list of tuples (title, cost)
+    items = list(books.items())
+
+    # Get the length of the list
+    n = len(items)
+
+    # Bubble Sort algorithm to sort the list based on the book cost (second element of the tuple)
+    for i in range(n):
+        swapped = False
+        for j in range(n - i - 1):
+            if items[j][1] > items[j + 1][1]:
+                # Swap if the current item's cost is greater than the next item's cost
+                items[j], items[j + 1] = items[j + 1], items[j]
+                swapped = True
+        if not swapped:
+            # If no swaps are made in a pass, the list is already sorted
+            break
+
+    # Convert the sorted list of tuples back into a dictionary
+    sorted_dict = dict(items)
+    return sorted_dict
+
+# Function to remove duplicate books (if any) from the dictionary
+def del_common(books):
+    unique_books = {}
+    for title, cost in books.items():
+        # Add the book to the new dictionary only if it's not already present
+        if title not in unique_books:
+            unique_books[title] = cost
+    return unique_books
+
+# Function to get book data from the user and store it in a dictionary
+def getData():
+    title = str(input("Enter the book Name: "))
+    cost = float(input("Enter the price of the book: "))
+    books[title] = cost
+
+# Main Program
+
+# Dictionary to store book titles and their corresponding costs
+books = {}
+
+# Input the number of books
+print("*************** BOOKS ENTRIES ***************")
+n = int(input("Enter the number of books: "))
+
+# Input book details for each book
+for i in range(n):
+    getData()
+
+# Remove duplicate book entries
+books = del_common(books)
+print("\nProcessed Dictionary (Without Duplicate Books):")
+print(books)
+
+# Sort the books in ascending order based on cost
+sorted_books = bubble_sort_dict(books)
+print("\n*********** Sorted Dictionary (by Cost) ***********")
+print(sorted_books)
+
+# Count and display the number of books with cost more than 500
+print("\n********** Count of Books Costing More than 500 ***********")
+count = count_book(books)
+print("Count of books with cost more than 500:", count)
+
+# Copy and display the books that have a cost less than 500 into a new list
+print("\n***** Books with Cost Less than 500 *****")
+under_500_books = copy_book(books)
+print("Books costing less than 500:", under_500_books)
