@@ -1,0 +1,69 @@
+#Experiment No 5
+# Python program to store second-year percentages of students and perform sorting using:
+# a) Insertion Sort
+# b) Shell Sort
+
+# Function to perform Insertion Sort
+def insertion_sort(student):
+    size = len(student)
+
+    # Traverse through 1 to len(student)
+    for i in range(1, size):
+        key = student[i]
+        j = i - 1
+
+        # Move elements of student[0...i-1], that are greater than key, to one position ahead of their current position
+        while j >= 0 and key < student[j]:
+            student[j + 1] = student[j]
+            j -= 1
+        student[j + 1] = key
+
+    print("\nMarks of students after performing Insertion Sort:")
+    print(', '.join(str(x) for x in student))
+
+    # Display top 5 scores
+    print("\nTop 5 Scores (Insertion Sort):")
+    print(', '.join(str(x) for x in student[-5:][::-1]))  # Last 5 elements in reverse order
+
+# Function to perform Shell Sort
+def shell_sort(student):
+    n = len(student)
+    gap = n // 2
+
+    # Start with a large gap, then reduce the gap
+    while gap > 0:
+        for i in range(gap, n):
+            # Save student[i] in temp and make a gap-sorted sublist
+            temp = student[i]
+            j = i
+            # Shift earlier gap-sorted elements up until the correct location for student[i] is found
+            while j >= gap and student[j - gap] > temp:
+                student[j] = student[j - gap]
+                j -= gap
+            student[j] = temp
+        gap //= 2  # Reduce the gap
+
+    print("\nMarks of students after performing Shell Sort:")
+    print(', '.join(str(x) for x in student))
+
+    # Display top 5 scores
+    print("\nTop 5 Scores (Shell Sort):")
+    print(', '.join(str(x) for x in student[-5:][::-1]))  # Last 5 elements in reverse order
+
+# Main Program
+print("********** Second Year Student Percentages **********")
+n = int(input("Enter total number of students: "))
+
+# List to store student percentages
+student_percentages = []
+
+print("Enter the percentage of each student:")
+for i in range(n):
+    percentage = float(input(f"Student {i + 1}: "))
+    student_percentages.append(percentage)
+
+# Perform Insertion Sort and display the result
+insertion_sort(student_percentages.copy())  # Passing a copy to keep original list intact
+
+# Perform Shell Sort and display the result
+shell_sort(student_percentages.copy())  # Passing a copy to keep original list intact
