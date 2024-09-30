@@ -1,0 +1,174 @@
+// Experiment No 1
+// Write C++ program to draw a concave polygon and fill it with desired color using scan fill
+// algorithm. Apply the concept of inheritance.
+
+#include <iostream>
+#include <graphics.h>  // Graphics library for drawing polygons
+#include <stdlib.h>    // Standard library for exit function
+using namespace std;
+
+// Declaration of class Point to represent coordinates
+class point {
+public:
+    int x, y;  // x and y coordinates of the point
+};
+
+// Declaration of class Poly to handle polygon operations
+class poly {
+private:
+    point p[20];    // Array to store the vertices of the polygon
+    int inter[20];  // Array to store intersection points on scan lines
+    int v;          // Number of vertices
+    int xmin, ymin, xmax, ymax;  // Bounding box of the polygon
+
+public:
+    int c;  // Count of intersections on scan lines
+    void read();        // Function to read polygon vertices from the user
+    void calcs();       // Function to calculate the bounding box (min/max values)
+    void display();     // Function to display the menu and process user input
+    void ints(float);   // Function to calculate intersections on scan lines
+    void sort(int);     // Function to sort intersections and fill polygon
+};
+
+// Function to read the polygon vertices from the user
+void poly::read() {
+    cout << "\n\tSCAN_FILL ALGORITHM";
+    cout << "\nEnter the number of vertices of the polygon: ";
+    cin >> v;
+
+    if (v > 2) {  // Ensure that the polygon has more than 2 vertices
+        for (int i = 0; i < v; i++) {
+            cout << "\nEnter the coordinates of vertex " << i + 1 << ": ";
+            cout << "\n\tx" << i + 1 << " = ";
+            cin >> p[i].x;
+            cout << "\n\ty" << i + 1 << " = ";
+            cin >> p[i].y;
+        }
+
+        // Close the polygon by connecting the last vertex to the first
+        p[v].x = p[0].x;
+        p[v].y = p[0].y;
+
+        // Initialize xmin, ymin, xmax, ymax with the first vertex
+        xmin = xmax = p[0].x;
+        ymin = ymax = p[0].y;
+    } else {
+        cout << "\nInvalid number of vertices. Must be greater than 2.";
+    }
+}
+
+// Function to calculate the bounding box of the polygon (xmin, xmax, ymin, ymax)
+void poly::calcs() {
+    for (int i = 0; i < v; i++) {
+        if (xmin > p[i].x) xmin = p[i].x;
+        if (xmax < p[i].x) xmax = p[i].x;
+        if (ymin > p[i].y) ymin = p[i].y;
+        if (ymax < p[i].y) ymax = p[i].y;
+    }
+}
+
+// Function to display the menu and handle user input
+void poly::display() {
+    int ch1;
+    char ch = 'y';
+    float s;
+
+    do {
+        cout << "\n\nMENU:";
+        cout << "\n\n\t1. Scan line Fill ";
+        cout << "\n\n\t2. Exit ";
+        cout << "\n\nEnter your choice: ";
+        cin >> ch1;
+
+        switch (ch1) {
+            case 1:
+                s = ymin + 0.01;  // Start scanning from ymin
+                delay(100);
+                cleardevice();  // Clear screen
+
+                // Scan each line from ymin to ymax
+                while (s <= ymax) {
+                    ints(s);  // Calculate intersections on this scan line
+                    sort(s);  // Sort and fill the scan line
+                    s++;
+                }
+                break;
+
+            case 2:
+                exit(0);  // Exit the program
+        }
+
+        cout << "Do you want to continue? (y/n): ";
+        cin >> ch;
+    } while (ch == 'y' || ch == 'Y');
+}
+
+// Function to calculate intersection points on the current scan line
+void poly::ints(float z) {
+    int x1, x2, y1, y2, temp;
+    int x;
+    c = 0;  // Initialize count of intersections
+
+    for (int i = 0; i < v; i++) {
+        x1 = p[i].x;
+        y1 = p[i].y;
+        x2 = p[i + 1].x;
+        y2 = p[i + 1].y;
+
+        // Swap vertices if necessary to ensure y1 < y2
+        if (y2 < y1) {
+            temp = x1; x1 = x2; x2 = temp;
+            temp = y1; y1 = y2; y2 = temp;
+        }
+
+        // Check if scan line z intersects with the edge between (x1, y1) and (x2, y2)
+        if (z <= y2 && z >= y1) {
+            if ((y2 - y1) == 0) {
+                x = x1;  // Horizontal line case
+            } else {
+                x = ((x2 - x1) * (z - y1)) / (y2 - y1) + x1;  // Calculate x-coordinate of intersection
+            }
+
+            if (x >= xmin && x <= xmax) {
+                inter[c++] = x;  // Store intersection point
+            }
+        }
+    }
+}
+
+// Function to sort intersections and fill the polygon
+void poly::sort(int z) {
+    // Draw polygon outline
+    for (int i = 0; i < v; i++) {
+        line(p[i].x, p[i].y, p[i + 1].x, p[i + 1].y);
+    }
+    delay(100);
+
+    // Fill the polygon by connecting pairs of intersection points
+    for (int i = 0; i < c; i += 2) {
+        delay(100);
+        line(inter[i], z, inter[i + 1], z);  // Draw a horizontal line between intersections
+    }
+}
+
+// Main function
+int main() {
+    int cl;
+    initwindow(500, 600);  // Initialize graphics window
+    cleardevice();  // Clear the screen
+
+    poly polygon;
+    polygon.read();  // Read vertices of the polygon
+    polygon.calcs();  // Calculate bounding box
+
+    cleardevice();
+    cout << "\nEnter the color you want (0-15): ";  // Ask the user for color input
+    cin >> cl;
+    setcolor(cl);  // Set the drawing color
+
+    polygon.display();  // Display menu and start scan-line filling
+
+    closegraph();  // Close the graphics window
+    getch();  // Wait for user input
+    return 0;
+}
