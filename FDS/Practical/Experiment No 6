@@ -1,0 +1,93 @@
+# Experiment No 6
+# Python program to store first-year percentages of students in an array
+# Perform Quick Sort and display the top five scores.
+
+# Function to accept percentages from the user
+def input_percentages():
+    percentages = []
+    num_students = int(input("Enter the number of students: "))
+    for i in range(num_students):
+        percentage = float(input(f"Enter the percentage of student {i + 1}: "))
+        percentages.append(percentage)
+    return percentages
+
+# Function to perform Quick Sort
+def quick_sort(arr):
+    # Base case for recursion
+    if len(arr) < 2:
+        return arr
+
+    # Choosing the first element as the pivot
+    pivot = arr[0]
+    less_than_pivot = []
+    greater_than_pivot = []
+
+    # Partitioning the array
+    for x in arr[1:]:
+        if x <= pivot:
+            less_than_pivot.append(x)
+        else:
+            greater_than_pivot.append(x)
+
+    # Recursively sorting and merging the sub-arrays
+    return quick_sort(less_than_pivot) + [pivot] + quick_sort(greater_than_pivot)
+
+# Function to display percentages
+def print_percentages(percentages):
+    if not percentages:
+        print("No percentages to display.")
+    else:
+        print("\nPercentages of Students:")
+        for score in percentages:
+            print(score)
+
+# Function to display top five percentages
+def display_top_five(percentages):
+    # Sorting ensures that the last 5 elements are the top 5 scores
+    if len(percentages) < 5:
+        top_five = percentages  # If there are fewer than 5 students, display all
+    else:
+        top_five = percentages[-5:]  # Get the last five elements from the sorted list
+
+    print("\nTop five percentages:")
+    for score in reversed(top_five):  # Displaying from highest to lowest
+        print(score)
+
+# Main
+unsorted_percentages = []
+
+while True:
+    print("\n--------------------MENU--------------------")
+    print("1. Accept the Percentage of Students")
+    print("2. Display the Percentages of Students")
+    print("3. Perform Quick Sort on the Data and Show Top 5 Percentages")
+    print("4. Exit")
+
+    choice = input("Enter your choice (1 to 4): ")
+
+    if choice == '1':
+        # Accept student percentages
+        unsorted_percentages = input_percentages()
+
+    elif choice == '2':
+        # Display the entered percentages
+        print_percentages(unsorted_percentages)
+
+    elif choice == '3':
+        # Perform quick sort and display the sorted list along with top 5 scores
+        if unsorted_percentages:
+            sorted_percentages = quick_sort(unsorted_percentages)
+            print("\nSorted Percentages:")
+            print(', '.join(str(x) for x in sorted_percentages))
+            display_top_five(sorted_percentages)
+        else:
+            print("No percentages available. Please enter data first.")
+
+    elif choice == '4':
+        # Exit the program
+        print("Thanks for using this program!!")
+        break
+
+    else:
+        # Invalid choice handling
+        print("Invalid Choice! Please enter a valid option.")
